@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"reflect"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -22,11 +24,60 @@ func BoolVar(p *bool, names []string, value bool, usage string) {
 	}
 }
 
+// IntVar defines an int flag with specified name, default value, and usage string.
+// The argument p points to an int variable in which to store the value of the flag.
+func IntVar(p *int, names []string, value int, usage string) {
+	for _, name := range names {
+		flag.CommandLine.IntVar(p, name, value, usage)
+	}
+}
+
+// Int64Var defines an int flag with specified name, default value, and usage string.
+// The argument p points to an int variable in which to store the value of the flag.
+func Int64Var(p *int64, names []string, value int64, usage string) {
+	for _, name := range names {
+		flag.CommandLine.Int64Var(p, name, value, usage)
+	}
+}
+
+// UintVar defines an int flag with specified name, default value, and usage string.
+// The argument p points to an int variable in which to store the value of the flag.
+func UintVar(p *uint, names []string, value uint, usage string) {
+	for _, name := range names {
+		flag.CommandLine.UintVar(p, name, value, usage)
+	}
+}
+
+// Uint64Var defines an int flag with specified name, default value, and usage string.
+// The argument p points to an int variable in which to store the value of the flag.
+func Uint64Var(p *uint64, names []string, value uint64, usage string) {
+	for _, name := range names {
+		flag.CommandLine.Uint64Var(p, name, value, usage)
+	}
+}
+
 // StringVar defines a string flag with specified multiple names, default value, and usage string.
 // The argument p points to a string variable in which to store the value of the flag.
 func StringVar(p *string, names []string, value string, usage string) {
 	for _, name := range names {
 		flag.CommandLine.StringVar(p, name, value, usage)
+	}
+}
+
+// Float64Var defines a float64 flag with specified name, default value, and usage string.
+// The argument p points to a float64 variable in which to store the value of the flag.
+func Float64Var(p *float64, names []string, value float64, usage string) {
+	for _, name := range names {
+		flag.CommandLine.Float64Var(p, name, value, usage)
+	}
+}
+
+// DurationVar defines a time.Duration flag with specified name, default value, and usage string.
+// The argument p points to a time.Duration variable in which to store the value of the flag.
+// The flag accepts a value acceptable to time.ParseDuration.
+func DurationVar(p *time.Duration, names []string, value time.Duration, usage string) {
+	for _, name := range names {
+		flag.CommandLine.DurationVar(p, name, value, usage)
 	}
 }
 
@@ -92,18 +143,41 @@ func PrintDefaults() {
 		}
 		s += strings.Replace(usage, "\n", "\n    \t", -1)
 
-		/**
-		if !flag.isZeroValue(f, f.DefValue) {
-			if _, ok := f.Value.(*stringValue); ok {
+		if vk, zero := isZeroValue(f, f.DefValue); !zero {
+			if vk == reflect.String {
 				// put quotes on the value
 				s += fmt.Sprintf(" (default %q)", f.DefValue)
 			} else {
 				s += fmt.Sprintf(" (default %v)", f.DefValue)
 			}
 		}
-		**/
 		fmt.Fprint(flag.CommandLine.Output(), s, "\n")
 	})
+}
+
+// isZeroValue guesses whether the string represents the zero
+// value for a flag. It is not accurate but in practice works OK.
+// [xroger88] slightly modified the original one to return the flag value's type kind
+func isZeroValue(f *flag.Flag, value string) (reflect.Kind, bool) {
+	typ := reflect.TypeOf(f.Value)
+	var z reflect.Value
+	var fvk reflect.Kind
+	if typ.Kind() == reflect.Ptr {
+		z = reflect.New(typ.Elem())
+		fvk = typ.Elem().Kind()
+	} else {
+		z = reflect.Zero(typ)
+		fvk = typ.Kind()
+	}
+	if value == z.Interface().(flag.Value).String() {
+		return fvk, true
+	}
+
+	switch value {
+	case "false", "", "0":
+		return fvk, true
+	}
+	return fvk, false
 }
 
 // Parse parses the command-line flags from os.Args[1:]. Must be called
