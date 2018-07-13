@@ -1,2 +1,7 @@
- hits: 5
- time: 5000000
+hits: 5
+time: 12345
+box:
+  a: 1
+  blist:
+  - 2
+  - 3

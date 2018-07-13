@@ -9,11 +9,36 @@ import (
 	"time"
 )
 
+var Myflags struct {
+	Show_help, Show_version, Enable_dameon, disable_stdout bool
+	Pid_file_path, Log_file_path, Config_file_path         string
+	Http_port                                              uint
+}
+
+const (
+	DEF_PID_FILE_PATH    = "./janus.pid"
+	DEF_LOG_FILE_PATH    = "./janus.log"
+	DEF_CONFIG_FILE_PATH = "./conf.yaml"
+	DEF_HTTP_PORT        = 8080
+)
+
 func init() {
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [OPTIONS]...\n", os.Args[0])
 		PrintDefaults()
 	}
+	BoolVar(&Myflags.Show_help, []string{"h", "help"}, false, "Print help and exit")
+	BoolVar(&Myflags.Show_version, []string{"v", "version"}, false, "Print version and exit")
+	BoolVar(&Myflags.Enable_dameon, []string{"d", "daemon"}, false, "Launch Janus in background as a dameon")
+	StringVar(&Myflags.Pid_file_path, []string{"p", "pid-file"}, DEF_PID_FILE_PATH,
+		"Open the specified PID file `path` when starting Janus")
+	StringVar(&Myflags.Log_file_path, []string{"l", "log-file"}, DEF_LOG_FILE_PATH,
+		"Open the specified log file `path` when starting Janus")
+	StringVar(&Myflags.Config_file_path, []string{"c", "config-file"}, DEF_CONFIG_FILE_PATH,
+		"Open the specified config file `path` when starting Janus")
+	UintVar(&Myflags.Http_port, []string{"hp", "Http_port"}, DEF_HTTP_PORT,
+		"Web server will be listen to http port")
+	flag.Parse()
 }
 
 // BoolVar defines a bool flag with specified mulitple names, default value, and usage string.
@@ -180,7 +205,16 @@ func isZeroValue(f *flag.Flag, value string) (reflect.Kind, bool) {
 	return fvk, false
 }
 
-// Parse parses the command-line flags from os.Args[1:]. Must be called
-func Parse() {
-	flag.Parse()
+func PrintHelpMessage() {
+	flag.Usage()
+}
+
+func PrintAll() {
+	fmt.Printf("Show_help=%v\n", Myflags.Show_help)
+	fmt.Printf("Show_version=%v\n", Myflags.Show_version)
+	fmt.Printf("Enable_dameon=%v\n", Myflags.Enable_dameon)
+	fmt.Printf("Pid_file_path=%q\n", Myflags.Pid_file_path)
+	fmt.Printf("Log_file_path=%q\n", Myflags.Log_file_path)
+	fmt.Printf("Config_file_path=%q\n", Myflags.Config_file_path)
+	fmt.Printf("Http_port=%v\n", Myflags.Http_port)
 }
