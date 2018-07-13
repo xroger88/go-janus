@@ -1,7 +1,24 @@
-hits: 5
-time: 12345
-box:
-  a: 1
-  blist:
-  - 2
-  - 3
+name: myConfiguration
+general:
+  configs_folder: /etc/janus/config
+  plugins_folder: /opt/janus/plugins
+  transports_folder: /opt/janus/transports
+  events_folder: /opt/janus/events
+  log_to_stdout: yes
+  log_to_file: ./janus.log
+  daemonize: true
+  pid_file: ./janus.pid
+  interface: 1.1.1.1
+  debug_level: 4
+  debug_timestamps: yes 
+  debug_colors: no 
+  debug_locks: no
+  api_secret: janusrocks
+  token_auth: no 
+  token_auth_secret: janus
+  admin_secret: janusoverload
+  server_name: MyJanusInstance
+  session_timeout: 60
+  reclaim_session_timeout: 0
+  recordings_tmp_ext: tmp
+

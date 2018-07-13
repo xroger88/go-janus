@@ -15,16 +15,34 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type conf struct {
-	Hits int64 `yaml:"hits"`
-	Time int64 `yaml:"time"`
-	Box  struct {
-		A     int   `yaml:"a"`
-		Blist []int `yaml:"blist"`
-	} `yaml:"box"`
+type ConfigType struct {
+	Name    string
+	General struct {
+		Configs_folder          string
+		Plugins_folder          string
+		Transports_folder       string
+		Events_folder           string
+		Log_to_stdout           bool
+		Log_to_file             string
+		Daemonize               bool
+		Pid_file                string
+		Interface               string
+		Debug_level             int
+		Debug_timestamps        bool
+		Debug_colors            bool
+		Debug_locks             bool
+		Api_secret              string
+		Token_auth              bool
+		Token_auth_secret       string
+		Admin_secret            string
+		Server_name             string
+		Session_timeout         int
+		Reclain_session_timeout int
+		Recordings_tmp_ext      string
+	}
 }
 
-func (c *conf) getConf(cfp string) *conf {
+func (c *ConfigType) getConf(cfp string) *ConfigType {
 
 	yamlFile, err := ioutil.ReadFile(cfp)
 	if err != nil {
@@ -38,7 +56,7 @@ func (c *conf) getConf(cfp string) *conf {
 	return c
 }
 
-func (c *conf) setConf(cfp string) *conf {
+func (c *ConfigType) setConf(cfp string) *ConfigType {
 	d, err := yaml.Marshal(&c)
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
@@ -51,7 +69,7 @@ func (c *conf) setConf(cfp string) *conf {
 	return c
 }
 
-var c conf
+var c ConfigType
 
 func LoadConfig(filepath string) {
 	c.getConf(filepath)
