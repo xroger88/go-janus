@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/xroger88/go-janus/util"
 	"gopkg.in/yaml.v2"
 )
 
@@ -69,14 +70,19 @@ func (c *ConfigType) setConf(cfp string) *ConfigType {
 	return c
 }
 
-var c ConfigType
+var Conf ConfigType
 
 func LoadConfig(filepath string) {
-	c.getConf(filepath)
-	fmt.Println(c)
+	Conf.getConf(filepath)
+	//fmt.Println(Conf)
 }
 
 func SaveConfig(filepath string) {
 	//c.Time = 12345
-	c.setConf(filepath)
+	Conf.setConf(filepath)
+}
+
+func PrintAll() {
+	fmt.Printf("*** The Configuration Details *** \n")
+	util.PrintValue(0, &Conf)
 }
