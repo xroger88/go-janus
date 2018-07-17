@@ -41,6 +41,49 @@ type ConfigType struct {
 		Reclain_session_timeout int
 		Recordings_tmp_ext      string
 	}
+	Certificates struct {
+		Cert_pem string
+		Cert_key string
+		Cert_pwd string
+	}
+	Media struct {
+		Ipv6           bool
+		Max_nack_queue int
+		Rfc_4588       bool
+		Rtp_port_range string
+		Dtls_mtu       int
+		No_media_timer int
+	}
+	Nat struct {
+		Stun_server          string
+		Stun_port            int
+		Nice_debug           bool
+		Full_trickle         bool
+		Ice_lite             bool
+		Ice_tcp              bool
+		Nat_1_1_mapping      string
+		Turn_server          string
+		Turn_port            int
+		Turn_type            string
+		Turn_user            string
+		Turn_pwd             string
+		Turn_rest_api        string
+		Turn_rest_api_key    string
+		Turn_rest_api_method string
+		Ice_enforce_list     string
+		Ice_ignore_list      string
+	}
+	Plugins struct {
+		Disable string
+	}
+	Transports struct {
+		Disable string
+	}
+	Events struct {
+		Broadcast    bool
+		Disable      string
+		Stats_period int
+	}
 }
 
 func (c *ConfigType) getConf(cfp string) *ConfigType {
