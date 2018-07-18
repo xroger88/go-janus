@@ -12,16 +12,16 @@ import (
 )
 
 var Flags struct {
-	Show_help, Show_version, Enable_daemon, Disable_stdout bool
-	Pid_file, Log_file, Config_file                        string
-	Http_port                                              uint
+	Show_help, Show_version, Enable_daemon, Show_flags, Show_config bool
+	Pid_file, Log_file, Config_file                                 string
+	Http_port                                                       uint
 }
 
 const (
-	DEF_PID_FILE_PATH    = "./janus.pid"
-	DEF_LOG_FILE_PATH    = "./janus.log"
-	DEF_CONFIG_FILE_PATH = "./conf.yaml"
-	DEF_HTTP_PORT        = 8080
+	DEF_PID_FILE    = "./janus.pid"
+	DEF_LOG_FILE    = "./janus.log"
+	DEF_CONFIG_FILE = "./conf.yaml"
+	DEF_HTTP_PORT   = 8080
 )
 
 func init() {
@@ -32,11 +32,13 @@ func init() {
 	BoolVar(&Flags.Show_help, []string{"h", "help"}, false, "Print help and exit")
 	BoolVar(&Flags.Show_version, []string{"v", "version"}, false, "Print version and exit")
 	BoolVar(&Flags.Enable_daemon, []string{"d", "daemon"}, false, "Launch Janus in background as a dameon")
-	StringVar(&Flags.Pid_file, []string{"p", "pid-file"}, DEF_PID_FILE_PATH,
+	BoolVar(&Flags.Show_flags, []string{"f", "flags"}, false, "Print command line flags and exit")
+	BoolVar(&Flags.Show_config, []string{"sc", "showconfig"}, false, "Print current configuration and exit")
+	StringVar(&Flags.Pid_file, []string{"p", "pid-file"}, DEF_PID_FILE,
 		"Open the specified PID file `path` when starting Janus")
-	StringVar(&Flags.Log_file, []string{"l", "log-file"}, DEF_LOG_FILE_PATH,
+	StringVar(&Flags.Log_file, []string{"l", "log-file"}, DEF_LOG_FILE,
 		"Open the specified log file `path` when starting Janus")
-	StringVar(&Flags.Config_file, []string{"c", "config-file"}, DEF_CONFIG_FILE_PATH,
+	StringVar(&Flags.Config_file, []string{"c", "config-file"}, DEF_CONFIG_FILE,
 		"Open the specified config file `path` when starting Janus")
 	UintVar(&Flags.Http_port, []string{"hp", "Http_port"}, DEF_HTTP_PORT,
 		"Web server will be listen to http port")
