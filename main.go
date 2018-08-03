@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	_ "github.com/sevlyar/go-daemon"
 	log "github.com/sirupsen/logrus"
 	"github.com/xroger88/go-janus/cmdflag"
 	"github.com/xroger88/go-janus/config"
@@ -39,14 +40,17 @@ func main() {
 
 	// override command-line flags into configuration
 	config.Conf.General.Daemonize = cmdflag.Flags.Enable_daemon
+
+	// TODO daemonize this using go-daemon package if the flag is set
+
 	if cmdflag.Flags.Log_file != cmdflag.DEF_LOG_FILE {
 		config.Conf.General.Log_to_file = cmdflag.Flags.Log_file
 	}
 
 	log_file := config.Conf.General.Log_to_file
 	if log_file != "" {
-		// init log to store logs into the specified log file
-		util.LogInit(log_file)
+		// initialize to store logs into the specified log file
+		util.LogInit(cmdflag.Flags.Disable_stdout, log_file)
 	}
 
 	// show the configuration set overrided by command-line flags

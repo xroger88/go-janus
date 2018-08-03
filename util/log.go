@@ -30,7 +30,7 @@ func (h *MyHookAll) Fire(entry *log.Entry) (err error) {
 	return
 }
 
-func LogInit(logfile string) {
+func LogInit(disable_stdout bool, logfile string) {
 	log.SetFormatter(&log.JSONFormatter{})
 	f, err := os.OpenFile(logfile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
@@ -38,8 +38,10 @@ func LogInit(logfile string) {
 	}
 
 	log.SetOutput(f)
-	// set a hook to print out all logs to stdout
-	log.AddHook(&MyHookAll{})
+	if !disable_stdout {
+		// set a hook to print out all logs to stdout
+		log.AddHook(&MyHookAll{})
+	}
 }
 
 func test() {
